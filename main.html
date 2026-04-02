@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GeoCalc - Proyecto SENA</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .shape-container svg {
+            max-height: 150px;
+            margin: 0 auto;
+            display: block;
+            fill: #ff6b00;
+            stroke: #333;
+            stroke-width: 2;
+        }
+        .tab-active {
+            border-bottom: 3px solid #ff6b00;
+            color: #ff6b00;
+            font-weight: bold;
+        }
+        .animate-fade {
+            animation: fadeIn 0.3s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen font-sans">
+
+    <!-- Header -->
+    <header class="bg-white shadow-sm p-4 border-b-4 border-orange-500 sticky top-0 z-50">
+        <div class="max-w-5xl mx-auto flex flex-col md:flex-row items-center justify-between">
+            <div class="flex items-center gap-4">
+                <div class="w-12 h-12 bg-orange-500 rounded-full flex items-center justify-center text-white font-bold text-xl shadow-lg">S</div>
+                <div>
+                    <h1 class="text-xl font-bold text-gray-800 uppercase tracking-tight">GeoCalc SENA</h1>
+                    <p class="text-xs text-gray-500 font-medium">Gabriel Domingo López Hernández • Ficha 3336239</p>
+                </div>
+            </div>
+            <nav id="main-nav" class="mt-4 md:mt-0 flex flex-wrap justify-center gap-4 uppercase text-[10px] md:text-xs tracking-wider font-bold text-gray-500">
+                <button onclick="switchView('intro')" id="nav-intro" class="py-2 hover:text-orange-600 transition-colors">Introducción</button>
+                <button onclick="switchView('calc')" id="nav-calc" class="tab-active py-2 hover:text-orange-600 transition-colors">Algoritmo</button>
+                <button onclick="switchView('sheet')" id="nav-sheet" class="py-2 hover:text-orange-600 transition-colors">Fórmulas</button>
+                <button onclick="switchView('concl')" id="nav-concl" class="py-2 hover:text-orange-600 transition-colors">Conclusión</button>
+            </nav>
+        </div>
+    </header>
+
+    <main class="max-w-5xl mx-auto p-4 md:p-8">
+        
+        <!-- SECCIÓN: INTRODUCCIÓN -->
+        <section id="view-intro" class="hidden animate-fade">
+            <div class="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 max-w-3xl mx-auto leading-relaxed text-gray-700">
+                <h2 class="text-3xl font-black text-gray-900 mb-6 border-l-8 border-orange-500 pl-4">Introducción</h2>
+                <p class="mb-4">
+                    En el mundo de la informática y la programación, la resolución de problemas relacionados con figuras geométricas es un desafío común. Ya sea que necesitemos calcular el área o el perímetro de diversas figuras, es esencial contar con un algoritmo eficiente y preciso que pueda manejar diferentes formas geométricas con facilidad.
+                </p>
+                <p class="mb-4">
+                    El objetivo de este proyecto es desarrollar un algoritmo versátil y fácil de usar que permita calcular el área o el perímetro dependiendo de la figura geométrica proporcionada. Para lograr esto, implementaremos un enfoque basado en la entrada del usuario, donde éste especificará la figura y proporcionará los datos necesarios, como las dimensiones o características específicas de cada figura.
+                </p>
+                <p class="bg-orange-50 p-4 rounded-xl text-orange-800 italic border-r-4 border-orange-200">
+                    "El algoritmo estará diseñado para trabajar con las siguientes figuras geométricas: círculo, triángulo, cuadrado, rectángulo, cubo y prisma recto."
+                </p>
+            </div>
+        </section>
+
+        <!-- SECCIÓN: CALCULADORA (ALGORITMO) -->
+        <section id="view-calc" class="animate-fade">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                <!-- Selector y Entradas -->
+                <div class="lg:col-span-5 bg-white p-6 rounded-3xl shadow-sm border border-gray-100">
+                    <div class="flex gap-2 mb-6 p-1 bg-gray-100 rounded-2xl">
+                        <button onclick="setCalcMode('area')" id="mode-area" class="flex-1 py-2 rounded-xl font-bold text-sm bg-white text-orange-600 shadow-sm transition-all">ÁREA</button>
+                        <button onclick="setCalcMode('volumen')" id="mode-volumen" class="flex-1 py-2 rounded-xl font-bold text-sm text-gray-500 hover:bg-gray-50 transition-all">VOLUMEN</button>
+                    </div>
+
+                    <h3 class="text-sm font-bold text-gray-400 uppercase mb-4 tracking-widest">Selecciona Figura</h3>
+                    <div id="shape-selectors" class="grid grid-cols-2 gap-3 mb-6">
+                        <!-- Botones Dinámicos -->
+                    </div>
+
+                    <div id="inputs-container" class="space-y-4 border-t border-gray-50 pt-6">
+                        <!-- Inputs Dinámicos -->
+                    </div>
+
+                    <button onclick="ejecutarCalculo()" class="w-full mt-8 bg-gray-900 hover:bg-orange-600 text-white font-bold py-4 rounded-2xl transition-all shadow-xl active:scale-95 flex items-center justify-center gap-2">
+                        <span>EJECUTAR ALGORITMO</span>
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                    </button>
+                </div>
+
+                <!-- Visualización -->
+                <div class="lg:col-span-7 flex flex-col gap-6">
+                    <div class="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 flex-1 flex flex-col items-center justify-center text-center relative overflow-hidden">
+                        <div id="shape-preview" class="shape-container transition-all duration-500 scale-110">
+                            <!-- SVG Dinámico -->
+                        </div>
+                        <div id="result-display" class="hidden mt-8">
+                            <p class="text-orange-500 text-xs uppercase font-black tracking-widest mb-1" id="res-label">Resultado Final</p>
+                            <p class="text-6xl font-black text-gray-900" id="res-value">0.00</p>
+                            <p class="text-gray-400 text-sm mt-2 font-medium" id="res-unit">unidades²</p>
+                        </div>
+                        <div id="empty-state" class="text-gray-300 flex flex-col items-center gap-4">
+                            <svg class="w-20 h-20 opacity-20" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2L2 7v10l10 5 10-5V7L12 2zm0 2.8L19 8v7.2L12 18l-7-2.8V8l7-3.2z"/></svg>
+                            <p class="italic text-lg">Esperando selección de figura...</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-gray-900 p-6 rounded-3xl text-white shadow-2xl">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-xs font-bold text-orange-500 uppercase tracking-widest">Consola de Salida</h3>
+                            <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+                        </div>
+                        <div id="history-log" class="text-sm font-mono h-32 overflow-y-auto space-y-2 custom-scrollbar">
+                            <div class="text-gray-500 italic">> Sistema listo para cálculos geométricos.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN: FÓRMULAS (SHEET) -->
+        <section id="view-sheet" class="hidden animate-fade">
+            <div class="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
+                <div class="p-8 bg-gray-50 border-b">
+                    <h2 class="text-2xl font-bold text-gray-800 italic">Sheet de Fórmulas Geométricas</h2>
+                    <p class="text-sm text-gray-500 mt-1">Referencia técnica utilizada en la programación del algoritmo.</p>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="bg-gray-100 text-gray-600 text-xs uppercase font-black tracking-widest">
+                                <th class="p-5 border-b">Figura</th>
+                                <th class="p-5 border-b">Operación</th>
+                                <th class="p-5 border-b">Fórmula Matemática</th>
+                                <th class="p-5 border-b">Variables de Entrada</th>
+                            </tr>
+                        </thead>
+                        <tbody class="text-sm text-gray-700 font-medium">
+                            <tr class="border-b hover:bg-orange-50/30"><td class="p-5 font-bold">Cuadrado</td><td class="p-5">Área</td><td class="p-5 text-orange-600">Lado * Lado</td><td class="p-5">lado</td></tr>
+                            <tr class="border-b hover:bg-orange-50/30"><td class="p-5 font-bold">Triángulo</td><td class="p-5">Área</td><td class="p-5 text-orange-600">(Base * Altura) / 2</td><td class="p-5">base, altura</td></tr>
+                            <tr class="border-b hover:bg-orange-50/30"><td class="p-5 font-bold">Círculo</td><td class="p-5">Área</td><td class="p-5 text-orange-600">3.14159 * Radio²</td><td class="p-5">radio</td></tr>
+                            <tr class="border-b hover:bg-orange-50/30"><td class="p-5 font-bold">Rectángulo</td><td class="p-5">Área</td><td class="p-5 text-orange-600">Base * Altura</td><td class="p-5">base, altura</td></tr>
+                            <tr class="border-b hover:bg-orange-50/30"><td class="p-5 font-bold">Cubo</td><td class="p-5">Volumen</td><td class="p-5 text-orange-600">Arista³</td><td class="p-5">arista</td></tr>
+                            <tr class="border-b hover:bg-orange-50/30"><td class="p-5 font-bold">Prisma Recto</td><td class="p-5">Volumen</td><td class="p-5 text-orange-600">Largo * Altura * Ancho</td><td class="p-5">largo, altura, ancho</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN: CONCLUSIÓN -->
+        <section id="view-concl" class="hidden animate-fade">
+            <div class="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 max-w-3xl mx-auto leading-relaxed text-gray-700">
+                <h2 class="text-3xl font-black text-gray-900 mb-6 border-l-8 border-orange-500 pl-4">Conclusión</h2>
+                <p class="mb-4">
+                    En esta actividad he desarrollado un algoritmo versátil y eficiente para calcular el área o el volumen de diferentes figuras geométricas. La implementación modular nos ha permitido abordar cada figura de manera individual, garantizando resultados precisos y facilitando la extensibilidad para agregar nuevas formas geométricas en el futuro.
+                </p>
+                <p class="mb-4 font-semibold text-gray-800">
+                    A través de este algoritmo, se ha demostrado cómo la programación puede simplificar la resolución de problemas geométricos y permitir que incluso aquellos con menos conocimientos en la materia puedan realizar cálculos precisos y rápidos. 
+                </p>
+                <div class="mt-8 pt-6 border-t flex items-center justify-between">
+                    <div>
+                        <p class="text-xs text-gray-400 uppercase font-bold">Desarrollado para</p>
+                        <p class="text-sm font-bold text-gray-600">SENA</p>
+                    </div>
+                    <div class="text-right">
+                        <p class="text-xs text-gray-400 uppercase font-bold">Instructor</p>
+                        <p class="text-sm font-bold text-gray-600">Sandra Liliana Herrera Rodriguez</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        let currentCalcMode = 'area';
+        let currentShape = null;
+
+        const shapesData = {
+            area: [
+                { id: 'cuadrado', name: 'Cuadrado', inputs: ['lado'], svg: '<rect x="25" y="25" width="100" height="100" rx="4"/>' },
+                { id: 'triangulo', name: 'Triángulo', inputs: ['base', 'altura'], svg: '<polygon points="75,25 20,125 130,125"/>' },
+                { id: 'circulo', name: 'Círculo', inputs: ['radio'], svg: '<circle cx="75" cy="75" r="55"/>' },
+                { id: 'rectangulo', name: 'Rectángulo', inputs: ['base', 'altura'], svg: '<rect x="15" y="45" width="120" height="60" rx="4"/>' }
+            ],
+            volumen: [
+                { id: 'cubo', name: 'Cubo', inputs: ['arista'], svg: '<path d="M40 55 L80 35 L120 55 L120 100 L80 120 L40 100 Z M40 55 L80 75 L120 55 M80 75 L80 120"/>' },
+                { id: 'prisma', name: 'Prisma Recto', inputs: ['largo', 'ancho', 'altura'], svg: '<path d="M25 65 L65 45 L135 45 L135 95 L95 115 L25 115 Z M25 65 L95 85 L135 65 M95 85 L95 115"/>' }
+            ]
+        };
+
+        function switchView(viewId) {
+            const sections = ['intro', 'calc', 'sheet', 'concl'];
+            sections.forEach(s => {
+                document.getElementById(`view-${s}`).classList.add('hidden');
+                document.getElementById(`nav-${s}`).classList.remove('tab-active');
+                document.getElementById(`nav-${s}`).classList.add('text-gray-500');
+            });
+
+            document.getElementById(`view-${viewId}`).classList.remove('hidden');
+            document.getElementById(`nav-${viewId}`).classList.add('tab-active');
+            document.getElementById(`nav-${viewId}`).classList.remove('text-gray-500');
+            
+            if (viewId === 'calc') renderSelectors();
+        }
+
+        function setCalcMode(mode) {
+            currentCalcMode = mode;
+            const btnArea = document.getElementById('mode-area');
+            const btnVol = document.getElementById('mode-volumen');
+
+            if (mode === 'area') {
+                btnArea.className = "flex-1 py-2 rounded-xl font-bold text-sm bg-white text-orange-600 shadow-sm transition-all";
+                btnVol.className = "flex-1 py-2 rounded-xl font-bold text-sm text-gray-500 hover:bg-gray-50 transition-all";
+            } else {
+                btnVol.className = "flex-1 py-2 rounded-xl font-bold text-sm bg-white text-orange-600 shadow-sm transition-all";
+                btnArea.className = "flex-1 py-2 rounded-xl font-bold text-sm text-gray-500 hover:bg-gray-50 transition-all";
+            }
+            renderSelectors();
+            resetDisplay();
+        }
+
+        function renderSelectors() {
+            const container = document.getElementById('shape-selectors');
+            container.innerHTML = '';
+            
+            shapesData[currentCalcMode].forEach(shape => {
+                const btn = document.createElement('button');
+                btn.className = "p-4 border-2 border-gray-100 rounded-2xl text-xs font-black uppercase tracking-widest hover:border-orange-500 hover:text-orange-600 transition-all bg-white shadow-sm hover:shadow-md";
+                btn.innerText = shape.name;
+                btn.onclick = () => selectShape(shape);
+                container.appendChild(btn);
+            });
+        }
+
+        function selectShape(shape) {
+            currentShape = shape;
+            const container = document.getElementById('inputs-container');
+            container.innerHTML = `<h3 class="text-[10px] font-black text-gray-400 uppercase tracking-tighter mb-2">Ingresa los datos para: ${shape.name}</h3>`;
+            
+            shape.inputs.forEach(input => {
+                const div = document.createElement('div');
+                div.innerHTML = `
+                    <label class="block text-xs font-bold text-gray-600 uppercase mb-1 ml-1">${input}</label>
+                    <input type="number" id="inp-${input}" class="w-full bg-gray-50 border-2 border-gray-100 rounded-xl p-3 focus:border-orange-500 focus:outline-none transition-all font-bold text-gray-800" placeholder="0.00">
+                `;
+                container.appendChild(div);
+            });
+
+            document.getElementById('shape-preview').innerHTML = `<svg viewBox="0 0 150 150" class="w-48 h-48 drop-shadow-2xl">${shape.svg}</svg>`;
+            document.getElementById('empty-state').classList.add('hidden');
+            document.getElementById('result-display').classList.remove('hidden');
+            document.getElementById('res-value').innerText = "0.00";
+            document.getElementById('res-unit').innerText = currentCalcMode === 'area' ? 'unidades²' : 'unidades³';
+        }
+
+        function ejecutarCalculo() {
+            if (!currentShape) return;
+            
+            let resultado = 0;
+            const vals = {};
+            currentShape.inputs.forEach(i => {
+                vals[i] = parseFloat(document.getElementById(`inp-${i}`).value) || 0;
+            });
+
+            if (currentCalcMode === 'area') {
+                if (currentShape.id === 'cuadrado') resultado = vals.lado * vals.lado;
+                if (currentShape.id === 'triangulo') resultado = (vals.base * vals.altura) / 2;
+                if (currentShape.id === 'circulo') resultado = 3.141592 * (vals.radio ** 2);
+                if (currentShape.id === 'rectangulo') resultado = vals.base * vals.altura;
+            } else {
+                if (currentShape.id === 'cubo') resultado = vals.arista ** 3;
+                if (currentShape.id === 'prisma') resultado = vals.largo * vals.altura * vals.ancho;
+            }
+
+            const formatted = resultado.toLocaleString('es-CO', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            document.getElementById('res-value').innerText = formatted;
+            
+            // Animación de impacto en el número
+            const resEl = document.getElementById('res-value');
+            resEl.classList.remove('animate-bounce');
+            void resEl.offsetWidth; 
+            resEl.classList.add('animate-pulse');
+
+            logHistory(currentShape.name, formatted);
+        }
+
+        function logHistory(name, val) {
+            const log = document.getElementById('history-log');
+            if (log.innerText.includes('Sistema listo')) log.innerHTML = '';
+            
+            const div = document.createElement('div');
+            div.className = "flex justify-between border-l-2 border-orange-500 pl-2 py-1 bg-gray-800/50";
+            div.innerHTML = `<span class="text-gray-400">CALC: ${name.toUpperCase()}</span> <span class="text-green-400 font-bold">${val} ${currentCalcMode === 'area' ? 'u²' : 'u³'}</span>`;
+            log.prepend(div);
+        }
+
+        function resetDisplay() {
+            document.getElementById('inputs-container').innerHTML = '';
+            document.getElementById('shape-preview').innerHTML = '';
+            document.getElementById('empty-state').classList.remove('hidden');
+            document.getElementById('result-display').classList.add('hidden');
+            currentShape = null;
+        }
+
+        window.onload = () => renderSelectors();
+    </script>
+</body>
+</html>
